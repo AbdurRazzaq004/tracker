@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { log } from './index';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://growmoree001_db_user:growmoree001@moneymanagement.emnpjop.mongodb.net/moneymanagement?retryWrites=true&w=majority';
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  throw new Error('MONGODB_URI environment variable is required. Add it to your .env file.');
+}
 
 // User Schema
 const userSchema = new mongoose.Schema({

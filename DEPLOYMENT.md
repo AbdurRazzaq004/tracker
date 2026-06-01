@@ -50,7 +50,7 @@ The `render.yaml` file includes most variables, but you should:
 ### Step 2: Configure
 1. Add environment variables in Railway dashboard:
    ```
-   MONGODB_URI=mongodb+srv://growmoree001_db_user:growmoree001@moneymanagement.emnpjop.mongodb.net/moneymanagement
+   MONGODB_URI=your-mongodb-connection-string-here
    SESSION_SECRET=your-secret-key-here
    NODE_ENV=production
    ```
