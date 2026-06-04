@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/lib/api';
 import type { Budget, InsertBudget, BudgetStatus } from '@shared/schema';
+import { useAuth } from './AuthContext';
 
 interface BudgetContextType {
   budgets: Budget[];
@@ -18,15 +19,18 @@ const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
 
 export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   const { data: budgets = [], isLoading: budgetsLoading } = useQuery({
     queryKey: ['budgets'],
     queryFn: api.fetchBudgets,
+    enabled: isAuthenticated,
   });
 
   const { data: budgetStatuses = [], isLoading: statusLoading } = useQuery({
     queryKey: ['budgets', 'status'],
     queryFn: api.fetchBudgetStatus,
+    enabled: isAuthenticated,
   });
 
   const upsertMutation = useMutation({

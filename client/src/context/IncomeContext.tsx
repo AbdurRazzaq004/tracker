@@ -4,6 +4,7 @@ import { isSameMonth, isSameWeek, isSameYear, parseISO } from 'date-fns';
 import * as api from '@/lib/api';
 import type { Income, InsertIncome } from '@shared/schema';
 import { useSettings } from './SettingsContext';
+import { useAuth } from './AuthContext';
 
 interface IncomeContextType {
   income: Income[];
@@ -24,10 +25,12 @@ const IncomeContext = createContext<IncomeContextType | undefined>(undefined);
 export function IncomeProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const { currency } = useSettings();
+  const { isAuthenticated } = useAuth();
 
   const { data: income = [], isLoading } = useQuery({
     queryKey: ['income'],
     queryFn: api.fetchIncome,
+    enabled: isAuthenticated,
   });
 
   const createMutation = useMutation({

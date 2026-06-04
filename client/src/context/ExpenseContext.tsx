@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/lib/api';
 import type { Expense, InsertExpense, Category as CategoryType } from '@shared/schema';
 import { useSettings } from './SettingsContext';
+import { useAuth } from './AuthContext';
 
 export type Category = string;
 
@@ -29,15 +30,18 @@ const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 export function ExpenseProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const { currency } = useSettings();
+  const { isAuthenticated } = useAuth();
 
   const { data: expenses = [], isLoading: expensesLoading } = useQuery({
     queryKey: ['expenses'],
     queryFn: api.fetchExpenses,
+    enabled: isAuthenticated,
   });
 
   const { data: categoriesData = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: api.fetchCategories,
+    enabled: isAuthenticated,
   });
 
   const categories = categoriesData.map((cat: CategoryType) => cat.name);

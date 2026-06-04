@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/lib/api';
 import type { UserSettings } from '@shared/schema';
+import { useAuth } from './AuthContext';
 
 interface SettingsContextType {
   currency: string;
@@ -22,12 +23,14 @@ const DEFAULT_SETTINGS: UserSettings = {
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings'],
     queryFn: api.fetchSettings,
     staleTime: 5 * 60 * 1000,
     retry: false,
+    enabled: isAuthenticated,
   });
 
   const updateMutation = useMutation({

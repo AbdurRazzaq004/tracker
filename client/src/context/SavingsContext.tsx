@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/lib/api';
 import type { SavingsGoal, InsertSavingsGoal, SavingsContribution } from '@shared/schema';
+import { useAuth } from './AuthContext';
 
 interface SavingsContextType {
   goals: SavingsGoal[];
@@ -21,10 +22,12 @@ const SavingsContext = createContext<SavingsContextType | undefined>(undefined);
 
 export function SavingsProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   const { data: goals = [], isLoading } = useQuery({
     queryKey: ['savings'],
     queryFn: api.fetchSavingsGoals,
+    enabled: isAuthenticated,
   });
 
   const createMutation = useMutation({
